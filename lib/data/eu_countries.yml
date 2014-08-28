@@ -1,0 +1,90 @@
+---
+AT:
+  names:
+    en: Austria
+BE: 
+  names:
+    en: Belgium
+BG: 
+  names:
+    en: Bulgaria
+HR: 
+  names:
+    en: Croatia
+CY: 
+  names:
+    en: Cyprus
+CZ: 
+  names:
+    en: Czech Republic
+DK: 
+  names:
+    en: Denmark
+EE: 
+  names:
+    en: Estonia
+FI: 
+  names:
+    en: Finland
+FR:
+  names:
+    en: France
+DE: 
+  names:
+    en: Germany
+  non_vat:
+    - 27498
+    - 78266
+GR: 
+  names:
+    en: Greece
+HU: 
+  names:
+    en: Hungary
+IE: 
+  names:
+    en: Ireland
+IT: 
+  names:
+    en: Italy
+LV: 
+  names:
+    en: Latvia
+LT: 
+  names:
+    en: Lithuania
+LU: 
+  names:
+    en: Luxembourg
+MT: 
+  names:
+    en: Malta
+NL: 
+  names:
+    en: Netherlands
+PL: 
+  names:
+    en: Poland
+PT: 
+  names:
+    en: Portugal
+RO: 
+  names:
+    en: Romania
+SK: 
+  names:
+    en: Slovakia
+SL: 
+  names:
+    en: Slovenia
+ES: 
+  names:
+    en: Spain
+  non_vat:
+    - "(35|38)[0-9]{3}"
+SE: 
+  names:
+    en: Sweden
+UK: 
+  names:
+    en: United Kingdom
