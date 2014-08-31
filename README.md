@@ -34,17 +34,30 @@ By default, the gem looks for `post code` and `country` methods to retrieve all 
 
 Now you can use following instance methods:
 
-    home_country? # true if a domestic address
+    home_country? # true if domestic address
+    
+    home_country_third_country_territory? # true if domestic address but on a third country territory 
+    
+    home_country_without_third_country_territory? # true if domestic address and outside of a third country territory
+    
     eu? # true if address is within EU (including home country)
+
+    eu_third_country_territory? # true if EU address but on a third country territory
+
+    eu_without_third_country_territory? # true if EU address and outside a third country territory
+
     eu_without_home_country? # true if address is within EU but abroad
-    third_country? # true for every country outside of EU and for some (tax related) third country territories within the EU
+
+    third_country? # true for every country outside of EU 
+
+Please note: 'third country territory' refers to EU VAT regulation only. Those rules don't apply to duty concerns. 
 
 Create your documents, accounting data, etc. based on the output of those instance methods.
 
 There is also a basic `vatable?` method which evaluates the need to claim VAT. 
 
     def vatable?
-      home_country?
+      home_country_without_third_country_territory? 
     end
 
 You might want to customize the rules (e.g. add a VAT number validation) by overwriting the method in your model.
@@ -59,7 +72,7 @@ You might want to customize the rules (e.g. add a VAT number validation) by over
 
 ## Caveats
 
-Lots of. The most important ones:
+The most important ones:
 
 * Currently, the country value needs to be in English. There's a YAML file inside the gem where you can easily add translations.
 * There are only three EU third country territories stored yet: Helgoland, Büsingen (both Germany) and Canary Islands (Spain)

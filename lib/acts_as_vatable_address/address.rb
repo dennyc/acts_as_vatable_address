@@ -3,46 +3,59 @@ require 'active_record'
 module ActsAsVatableAddress
   module Address
     def self.included(base)
+      base.const_set :VATABLE_COUNTRIES, YAML.load_file(File.join(File.dirname(__FILE__),"../data/eu_countries.yml"))
       base.extend ClassMethods
     end
 
     def home_country?
-      vatable_country && (vatable_country[:iso] == home_country_code)
+      eu? && (vatable_country[:iso] == home_country_code)
     end
 
     def eu?
       vatable_country.present?
     end
 
+    def third_country?
+      !eu?      
+    end
+
+    def vatable?
+      home_country_without_third_country_territory? 
+    end
+
+    def home_country_third_country_territory?
+      home_country? && eu_third_country_territory?
+    end
+
+    def home_country_without_third_country_territory?
+      home_country? && !eu_third_country_territory?
+    end
+
     def eu_without_home_country?
       !home_country? && eu?
     end
 
-    def third_country?
+    def eu_third_country_territory?
       if eu?
         country = vatable_country
         if country.has_key?('non_vat')
           country['non_vat'].find do |non_vat|
             postcode_value =~ Regexp.new(non_vat.to_s)
-          end
+          end.present?
         else
           false
         end
       else
-        true
-      end       
+        false
+      end
     end
 
-    def vatable?
-      !eu_without_home_country? 
+    def eu_without_third_country_territory?
+      eu? && !eu_third_country_territory?
     end
 
     module ClassMethods
       def acts_as_vatable_address(home_country_code, options = {})
-        
-        class_attribute :vatable_countries
-        self.vatable_countries ||= YAML.load_file(File.join(File.dirname(__FILE__),"../data/eu_countries.yml"))
-        
         default_options = {
           postcode: :postcode,
           country: :country,
@@ -55,7 +68,7 @@ module ActsAsVatableAddress
           country_finder = %(
             def vatable_country
               country = country_value
-              result = self.class.vatable_countries.find do |code, data|
+              result = VATABLE_COUNTRIES.find do |code, data|
                 data['names'].values.find do |name|
                   name.to_s.upcase == country
                 end
@@ -67,7 +80,7 @@ module ActsAsVatableAddress
         elsif options[:country_from] == :iso
           country_finder = %(
             def vatable_country
-              result = self.class.vatable_countries[country_value]
+              result = VATABLE_COUNTRIES[country_value]
               result ? result.merge({iso: country_value }) : nil
             end
           )
@@ -88,6 +101,7 @@ module ActsAsVatableAddress
             #{options[:country]}.to_s.upcase
           end
 
+          private
           #{country_finder}
         EOV
       end
